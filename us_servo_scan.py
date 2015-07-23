@@ -69,7 +69,6 @@ def rollon():
 
 while keepgoing:
 	scan()
-	pscan()
 	rollon()
 	if us_dist(15) < edistance:
 		stop()
