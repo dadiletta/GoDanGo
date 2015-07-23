@@ -38,6 +38,7 @@ def rollon():
 			break
 		else:
 			print("Path clear, moving forward")
+			servo(80)
 			fwd()
 
 
@@ -73,6 +74,8 @@ while keepgoing:
 	scan()
 	pscan()
 	rollon()
+	if us_dist(15) < edistance:
+		stop()
   
 stop()
 disable_servo()
