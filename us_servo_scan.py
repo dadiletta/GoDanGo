@@ -18,29 +18,15 @@ sdistance = 50
 edistance = 10
 
 def scan():
+	stop()
 	for ang in range(30, 130, 2):
 		servo(ang)
 		time.sleep(.02)
 		sweep[ang] = us_dist(15)
+		print("Angle of", ang, "has distance", sweep[ang])
 		if sweep[ang] < edistance:
 			print("EMERGENCY STOP")
 			stop()
-
-def pscan():
-	for ang in range(30, 130, 2):
-		print("Angle of", ang, "has distance", sweep[ang])
-
-def rollon():
-	for ang in range(30, 130, 2): 
-		if sweep[ang] < sdistance:
-			print("Problem detected. Calling findavector")
-			findavector()
-			break
-		else:
-			print("Path clear, moving forward")
-			servo(80)
-			fwd()
-
 
 def findavector():
 	count = 0
@@ -69,6 +55,17 @@ def turnto(ang):
 		left()
 		time.sleep(abs(diff)/1000)
 		stop()
+
+def rollon():
+	for ang in range(30, 130, 2): 
+		if sweep[ang] < sdistance:
+			print("Problem detected. Calling findavector")
+			findavector()
+			break
+		else:
+			print("Path clear, moving forward")
+			servo(80)
+			fwd()
 
 while keepgoing:
 	scan()
