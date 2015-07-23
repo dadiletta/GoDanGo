@@ -25,7 +25,7 @@ def scan():
 		sweep[ang] = us_dist(15)
 		print("Angle of", ang, "has distance", sweep[ang])
 		if sweep[ang] < edistance:
-			print("EMERGENCY STOP")
+			print("Stop signal sent. Close obstacle.")
 			stop()
 
 def findavector():
@@ -42,6 +42,7 @@ def findavector():
 	if count < 20:
 		print("I don't see a path ahead.")
 		keepgoing = False
+		print("The while loop has now been set to", keepgoing)
 	
 def turnto(ang):
 	diff = 80 - ang
@@ -68,6 +69,7 @@ def rollon():
 			fwd()
 
 while keepgoing:
+	print("Hi. While loop is set to", keepgoing)
 	scan()
 	rollon()
 	if us_dist(15) < edistance:
