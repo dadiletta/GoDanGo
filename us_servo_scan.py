@@ -28,7 +28,7 @@ def scan():
 
 def pscan():
 	for ang in range(30, 130, 2):
-		print('Angle of', ang, "has distance," sweep[ang])
+		print('Angle of', ang, 'has distance,' sweep[ang])
 
 def rollon():
 	for ang in range(30, 130, 2): 
