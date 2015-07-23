@@ -16,6 +16,7 @@ sdistance = 50
 
 def scan():
 	stop()
+	enable_servo()
 	allclear = True
 	for ang in range(30, 130, 2):
 		servo(ang)
@@ -43,6 +44,9 @@ def turnto(ang):
 while True:
 	if scan() == True:
 		while True:
+			servo(80)
+			disable_servo()
+			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
 			print "Dist:",dist,'cm'
 			if dist<sdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
