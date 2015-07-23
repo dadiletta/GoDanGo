@@ -11,7 +11,7 @@ import sys
 from collections import Counter
 import math
 
-continue = true
+keepgoing = true
 sweep = [None] * 130
 count = 0 
 sdistance = 50 
@@ -54,7 +54,7 @@ def findavector():
 			turnto(ang)
 	if count < 20:
 		print("I don't see a path ahead.")
-		continue = false
+		keepgoing = false
 	
 def turnto(ang):
 	diff = 80 - ang
@@ -69,7 +69,7 @@ def turnto(ang):
 		time.sleep(abs(diff)/1000)
 		stop()
 
-while continue:
+while keepgoing:
 	scan()
 	pscan()
 	rollon()
