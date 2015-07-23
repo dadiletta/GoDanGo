@@ -21,7 +21,7 @@ def scan():
 	for ang in range(30, 130, 2):
 		servo(ang)
 		time.sleep(.02)
-		sweep[ang] = us_servo(15)
+		sweep[ang] = us_dist(15)
 		if sweep[ang] < edistance:
 			print("EMERGENCY STOP")
 			stop()
