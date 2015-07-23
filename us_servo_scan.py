@@ -12,7 +12,8 @@ from collections import Counter
 import math
 
 sweep = [None] * 130
-sdistance = 50
+stopdistance = 50
+fardistance = 80
 
 def scan():
 	stop()
@@ -20,7 +21,7 @@ def scan():
 	allclear = True
 	for ang in range(30, 130, 2):
 		servo(ang)
-		time.sleep(.02)
+		time.sleep(.04)
 		sweep[ang] = us_dist(15)
 		print("Angle of", ang, "has distance", sweep[ang])
 		if sweep[ang] < sdistance:
@@ -43,20 +44,26 @@ def turnto(ang):
 
 while True:
 	if scan() == True:
+		stopcount = 0
 		while True:
 			servo(80)
 			disable_servo()
+			set_left_speed(120)
+			set_right_speed(165)
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
 			print "Dist:",dist,'cm'
-			if dist<sdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
-				print "Something in my way."
+			if dist < stopdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
+				stopcount += 1
+				print "Is that something in my way?"
+			if stopcount > 2
+				print "Yup. Something in my way."
 				stop() #Stop the GoPiGo
 				break
 	else:
 		count = 0
 		for ang in range(30, 130, 2):
-			if sweep[ang] > sdistance:
+			if sweep[ang] > fardistance:
 				count += 1
 			if count > 20:
 				if ang < 80:
