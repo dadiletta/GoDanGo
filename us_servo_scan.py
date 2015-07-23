@@ -31,7 +31,7 @@ def scan():
 def findavector():
 	count = 0
 	for ang in range(30, 130, 2):
-		if sweep[ang] > ddistance:
+		if sweep[ang] > sdistance:
 			count += 1
 		if count > 20:
 			if ang < 80:
