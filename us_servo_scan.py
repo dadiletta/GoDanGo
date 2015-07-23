@@ -24,7 +24,7 @@ def scan():
 		time.sleep(.04)
 		sweep[ang] = us_dist(15)
 		print("Angle of", ang, "has distance", sweep[ang])
-		if sweep[ang] < sdistance:
+		if sweep[ang] < stopdistance:
 			allclear = False
 	return allclear
 
@@ -33,11 +33,11 @@ def turnto(ang):
 	
 	if diff >= 0:
 		stop()
-		enc_tgt(1,0,4)
+		enc_tgt(1,0,5)
 		right()
 	else:
 		stop()
-		enc_tgt(0,1,4)
+		enc_tgt(0,1,5)
 		left()
 
 
@@ -52,11 +52,11 @@ while True:
 			set_right_speed(165)
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
-			print "Dist:",dist,'cm'
+			print "I see something ",dist,"cm ahead."
 			if dist < stopdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
 				stopcount += 1
 				print "Is that something in my way?"
-			if stopcount > 2
+			if stopcount > 2:
 				print "Yup. Something in my way."
 				stop() #Stop the GoPiGo
 				break
