@@ -32,6 +32,7 @@ def scan():
 	return allclear
 
 def turnto(ang):
+	#TODO: Debug, sometimes not turning, sometimes turning excessively
 	diff = 80 - ang  #for some reason, 80 degrees is straight ahead with my servo
 	turnboost = 1
 	if abs(diff) > 30: #greater than 30 degrees, we should increase the amount needed to turn
@@ -42,11 +43,13 @@ def turnto(ang):
 		print("Moving right.") 
 		enc_tgt(1,0,(5*turnboost)) #18 is a full rotation of the wheel, 
 		right()
+		time.sleep(.5) #give the bot time to turn before the app moves on
 	else:
 		stop()
 		print("Moving left.")
-		enc_tgt(0,1,(5*turnboost))
+		enc_tgt(0,1,(5*turnboost)) 
 		left()
+		time.sleep(.5) #give the bot time to turn before the app moves on
 
 def turnaround():
 	command = raw_input().lower() #take a command and make it lowercase
@@ -69,12 +72,12 @@ def turnaround():
 while True:
 	if scan() == True:   #Call the scan and if allclear returns positive, let's roll
 		stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
+		print "Let's roll."   #always good to print messages so you can debug easier
 		while True:
 			#TODO: Can I script a volt meter so if there are any spikes we stop for that as well?
 			#TODO: servo sometimes twitches while driving. Why? I disable it... 
 			servo(80)  #move the sensor straight ahead, happens to be 80 for my servo
 			disable_servo()
-			print "Let's roll."   #always good to print messages so you can debug easier
 			set_left_speed(120)  #adjust these so your GoPiGo cruises straight
 			set_right_speed(145) #adjust these so your GoPiGo cruises straight
 			fwd()
