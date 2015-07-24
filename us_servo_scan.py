@@ -50,6 +50,9 @@ def turnto(ang):
 def turnaround():
 	command = raw_input().lower()
 	if command == "yes" or command == "y" or command == "sure":
+		stop()
+		servo(80)
+		disable_servo()
 		enc_tgt(1,1,18)
 		bwd()
 		enc_tgt(1,1,18)
@@ -65,8 +68,8 @@ while True:
 		while True:
 			servo(80)
 			disable_servo()
-			set_left_speed(120)
-			set_right_speed(165)
+			set_left_speed(120)  #adjust these so your GoPiGo cruises straight
+			set_right_speed(165) #adjust these so your GoPiGo cruises straight
 			print "Let's roll."
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
