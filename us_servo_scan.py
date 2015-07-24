@@ -13,7 +13,7 @@ import sys  #Used to get input from user via console
 from collections import Counter  #do I even need this?
 import math  #Do I need this?
 
-sweep = [None] * 130  #the list to hold scanning data
+sweep = [None] * 160  #the list to hold scanning data
 stopdistance = 50  #distance at which the vehicle will halt or will trigger an unsafe scan
 fardistance = 80  #distance used when plotting a clear direction... longer so we're planning farther ahead
 
@@ -22,12 +22,12 @@ def scan():
 	enable_servo()  #I don't think I need to enable this. Can I remove?
 	allclear = True
 	print "Starting to scan."
-	for ang in range(30, 130, 2): #this is the angle that covers the front of my bot's path, your mounting may be different
-		servo(ang)
-		time.sleep(.04) #pause between scans seems to get better results
+	for ang in range(10, 160, 2): #wide scan, skipping all the odd numbers to move quicker
+		servo(ang)  #move the servo to the angle in the loop
 		sweep[ang] = us_dist(15) #note the distance at each angle
+		time.sleep(.04) #pause between scans seems to get better results
 		print("Angle of", ang, "has distance", sweep[ang])
-		if sweep[ang] < stopdistance: #if we detect any obstacle, return the message that all is not clear
+		if sweep[ang] < stopdistance and ang > 65 and ang < 95: #if we detect any obstacle in the direct path ahead
 			allclear = False
 	return allclear
 
@@ -92,15 +92,15 @@ while True:
 				break #stop the fwd loop
 	else:   #here's where we find a safe window to drive forward
 		count = 0  #
-		for ang in range(30, 130, 2):
+		for ang in range(10, 160, 2):
 			if sweep[ang] > fardistance:
 				count += 1   #count how many angles have a clear path ahead
 			else: 
 				count = 0   #resets the counter to 0 if a obstacle is detected, we only want 20 returns of safe in a row
-			if count >= 10:   #10 counts means 20 degrees (since I count by 2s in the loop)
+			if count >= 15:   #15 counts means 30 degrees (since I count by 2s in the loop)
 				turnto(ang)
 				break #once we've found a path, stop looping through the scan data. This favors the right side since that's scanned first
-		if count < 10:     #This is what happens if a window of obstacle-free scan data is not found
+		if count < 15:     #This is what happens if a window of obstacle-free scan data is not found
 			print("I don't see a path ahead. Shall I try a 180?")
 			if not turnaround(): #if turnaround returns false
 				break #shut it down if ya can't turn 'round
