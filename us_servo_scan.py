@@ -43,7 +43,7 @@ def scan():
 			servo(ang)  #move the servo to the angle in the loop
 			time.sleep(.07) #pause between scans seems to get better results (has to be before the sensor is activated)
 			sweep[ang] = us_dist(15) #note the distance at each angle
-			print("Angle of", ang, "has distance", sweep[ang])
+			print "[Angle:", ang, "--", sweep[ang], "cm]", end=""
 			if sweep[ang] < fardistance and ang > 65 and ang < 95: #if we detect any obstacle in the direct path ahead
 				allclear = False
 	return allclear
@@ -66,7 +66,8 @@ def turnto(ang):
 			print "Having trouble stopping"
 		print("Moving right.") 
 		enc_tgt(1,0,turnnum) #18 is a full rotation of the wheel, 
-		right()
+		while right() == 0:
+			print "Having trouble turning right"
 		time.sleep(.5) #give the bot time to turn before the app moves on
 		while stop() == 0:
 			print "Having trouble stopping"
@@ -75,19 +76,33 @@ def turnto(ang):
 			print "Having trouble stopping"
 		print("Moving left.")
 		enc_tgt(0,1,turnnum) 
-		left()
+		while left() == 0:
+			print "Having trouble turning left"
 		time.sleep(.5) #give the bot time to turn before the app moves on
 		while stop() == 0:
 			print "Having trouble stopping"
 
+def voltcheck():
+	if volt() < 7:
+		print "Not enough power"
+		return False
+	elif volt() > 12:
+		print "Spike in voltage!"
+		return False
+	else:
+		print "Power is", volt(), "V"
+		return True
+
 def turnaround():
 	command = raw_input().lower() #take a command and make it lowercase
 	if command == "yes" or command == "y" or command == "sure":
-		stop()
+		while stop() == 0:
+			print "Having trouble stopping"
 		servo(80)
 		disable_servo()
 		print "Backing up. Beep beep beep."
-		bwd()   #TODO: Why doesnt this back up? Mostly just rotates.
+		while bwd() == 0:
+			print "Having trouble backing up"
 		time.sleep(.8)  #TODO: Replace sleeps with enc_tgt. Was having trouble with it.
 		stop()
 		right_rot()
@@ -98,7 +113,7 @@ def turnaround():
 		return False #user said not to continue. Return false and break the loop
 
 #HERE'S WHERE THE PROGRAM STARTS
-while True:
+while voltcheck():
 	if scan() == True:   #Call the scan and if allclear returns positive, let's roll
 		stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
 		print "Let's roll."   #always good to print messages so you can debug easier
@@ -112,7 +127,7 @@ while True:
 			set_right_speed(145) #adjust these so your GoPiGo cruises straight
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
-			print "I see something ",dist,"cm ahead. My voltage is",volt()
+			print "Obj",dist,"cm.", end=""
 			if dist < stopdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
 				stopcount += 1
 				print "Is that something in my way?"
