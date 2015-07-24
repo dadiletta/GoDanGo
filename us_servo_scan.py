@@ -40,12 +40,12 @@ def turnto(ang):
 	if diff >= 0:
 		stop()
 		print("Moving right.") 
-		enc_tgt(1,0,5*turnboost) #18 is a full rotation of the wheel, 
+		enc_tgt(1,0,(5*turnboost)) #18 is a full rotation of the wheel, 
 		right()
 	else:
 		stop()
 		print("Moving left.")
-		enc_tgt(0,1,5*turnboost)
+		enc_tgt(0,1,(5*turnboost))
 		left()
 
 def turnaround():
@@ -94,10 +94,10 @@ while True:
 				count += 1   #count how many angles have a clear path ahead
 			else: 
 				count = 0   #resets the counter to 0 if a obstacle is detected, we only want 20 returns of safe in a row
-			if count >= 20:   #20 counts means 40 degrees (since I count by 2s in the loop)... maybe I could try a smaller window?
+			if count >= 10:   #10 counts means 20 degrees (since I count by 2s in the loop)
 				turnto(ang)
 				break #once we've found a path, stop looping through the scan data. This favors the right side since that's scanned first
-		if count < 20:     #This is what happens if a window of obstacle-free scan data is not found
+		if count < 10:     #This is what happens if a window of obstacle-free scan data is not found
 			print("I don't see a path ahead. Shall I try a 180?")
 			if not turnaround(): #if turnaround returns false
 				break #shut it down if ya can't turn 'round
