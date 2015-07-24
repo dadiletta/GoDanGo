@@ -14,21 +14,38 @@ from collections import Counter  #do I even need this?
 import math  #Do I need this?
 
 sweep = [None] * 160  #the list to hold scanning data
-stopdistance = 50  #distance at which the vehicle will halt or will trigger an unsafe scan
-fardistance = 80  #distance used when plotting a clear direction... longer so we're planning farther ahead
+stopdistance = 50  #distance at which the vehicle will halt while in motion
+fardistance = 90  #distance used when plotting a clear direction... longer so we're planning farther ahead
+
+def quickcheck():
+	servo(65)  #check the right edge of our forward path
+	time.sleep(.07) #pause so the sensor reading is more accurate
+	check1 = us_dist(15) #first check
+	servo(80)  #check dead ahead
+	time.sleep(.07)
+	check2 = us_dist(15)
+	servo(95) #check the left edge of our forward path
+	time.sleep(.07)
+	check3 = us_dist(15)
+	if check1 > fardistance and check2 > fardistance and check3 > fardistance:
+		print "Quick check looks good."
+		return True
+	else:
+		return False
 
 def scan():
-	stop()  #I tried making it scan while in motion but couldn't manage it.. is this impossible with the GoPiGo?
-	stop()
+	while stop() == 0:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
+		print "Having trouble stopping"
 	allclear = True
-	print "Starting to scan."
-	for ang in range(10, 160, 2): #wide scan, skipping all the odd numbers to move quicker
-		servo(ang)  #move the servo to the angle in the loop
-		time.sleep(.09) #pause between scans seems to get better results (has to be before the sensor is activated)
-		sweep[ang] = us_dist(15) #note the distance at each angle
-		print("Angle of", ang, "has distance", sweep[ang])
-		if sweep[ang] < stopdistance and ang > 65 and ang < 95: #if we detect any obstacle in the direct path ahead
-			allclear = False
+	if not quickcheck():
+		print "Starting a full scan."
+		for ang in range(10, 160, 2): #wide scan, skipping all the odd numbers to move quicker
+			servo(ang)  #move the servo to the angle in the loop
+			time.sleep(.07) #pause between scans seems to get better results (has to be before the sensor is activated)
+			sweep[ang] = us_dist(15) #note the distance at each angle
+			print("Angle of", ang, "has distance", sweep[ang])
+			if sweep[ang] < fardistance and ang > 65 and ang < 95: #if we detect any obstacle in the direct path ahead
+				allclear = False
 	return allclear
 
 def turnto(ang):
@@ -45,21 +62,23 @@ def turnto(ang):
 		turnnum = 5
 		print "Setting turn variable to 5."
 	if diff >= 0:
-		stop()
+		while stop() == 0:
+			print "Having trouble stopping"
 		print("Moving right.") 
 		enc_tgt(1,0,turnnum) #18 is a full rotation of the wheel, 
 		right()
 		time.sleep(.5) #give the bot time to turn before the app moves on
-		stop()
-		stop()
+		while stop() == 0:
+			print "Having trouble stopping"
 	else:
-		stop()
+		while stop() == 0:
+			print "Having trouble stopping"
 		print("Moving left.")
 		enc_tgt(0,1,turnnum) 
 		left()
 		time.sleep(.5) #give the bot time to turn before the app moves on
-		stop()
-		stop()
+		while stop() == 0:
+			print "Having trouble stopping"
 
 def turnaround():
 	command = raw_input().lower() #take a command and make it lowercase
@@ -87,12 +106,13 @@ while True:
 			#TODO: Can I script a volt meter so if there are any spikes we stop for that as well?
 			#TODO: servo sometimes twitches while driving. Why? I disable it... 
 			servo(80)  #move the sensor straight ahead, happens to be 80 for my servo
-			disable_servo()
+			while disable_servo() == 0:
+				print "Having trouble disabling my servo"
 			set_left_speed(120)  #adjust these so your GoPiGo cruises straight
 			set_right_speed(145) #adjust these so your GoPiGo cruises straight
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
-			print "I see something ",dist,"cm ahead."
+			print "I see something ",dist,"cm ahead. My voltage is",volt()
 			if dist < stopdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
 				stopcount += 1
 				print "Is that something in my way?"
