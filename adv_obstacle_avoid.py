@@ -1,17 +1,6 @@
 #!/usr/bin/env python
 ########################################################################                                                                  
-# This example demonstrates using the Ultrasonic sensor with the GoPiGo
-#
-# In this examples, the GoPiGo keeps reading from the ultrasonic sensor and when it close to the an obstacle, it stops.
-#
-# http://www.dexterindustries.com/GoPiGo/                                                                
-# History
-# ------------------------------------------------
-# Author     Date      		Comments
-# Karan      21 Aug 14 		Initial Authoring
-# 			                                                         
-# These files have been made available online through a Creative Commons Attribution-ShareAlike 3.0  license.
-# (http://creativecommons.org/licenses/by-sa/3.0/)           
+# This script uses an Ultrasonic sensor to detect a collision and turn right
 #
 ########################################################################
 #
