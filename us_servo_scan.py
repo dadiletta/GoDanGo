@@ -33,21 +33,27 @@ def scan():
 
 def turnto(ang):
 	#TODO: Debug, sometimes not turning, sometimes turning excessively
-	diff = 80 - ang  #for some reason, 80 degrees is straight ahead with my servo
-	turnboost = 1
-	if abs(diff) > 30: #greater than 30 degrees, we should increase the amount needed to turn
-		turnboost = 2
-		print "Need to turn more than 30 degrees. Boosting my turn."
+	diff = 80 - (ang-15)  #for some reason, 80 degrees is straight ahead with my servo. I take off 15 from ang to find the center of the window
+	turnnum = 5
+	if abs(diff) > 30 and abs(diff) =< 60: #greater than 30 degrees, we should increase the amount needed to turn
+		turnnum = 10
+		print "Setting turn variable to 10."
+	elif abs(diff) > 60:
+		turnnum = 15
+		print "Setting turn variable to 15."
+	else:
+		turnnum = 5
+		print "Setting turn variable to 5."
 	if diff >= 0:
 		stop()
 		print("Moving right.") 
-		enc_tgt(1,0,(5*turnboost)) #18 is a full rotation of the wheel, 
+		enc_tgt(1,0,turnnum) #18 is a full rotation of the wheel, 
 		right()
 		time.sleep(.5) #give the bot time to turn before the app moves on
 	else:
 		stop()
 		print("Moving left.")
-		enc_tgt(0,1,(5*turnboost)) 
+		enc_tgt(0,1,turnnum) 
 		left()
 		time.sleep(.5) #give the bot time to turn before the app moves on
 
