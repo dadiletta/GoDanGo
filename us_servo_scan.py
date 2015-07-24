@@ -19,7 +19,7 @@ fardistance = 80  #distance used when plotting a clear direction... longer so we
 
 def scan():
 	stop()  #I tried making it scan while in motion but couldn't manage it.. is this impossible with the GoPiGo?
-	enable_servo()  #I don't think I need to enable this. Can I remove?
+	stop()
 	allclear = True
 	print "Starting to scan."
 	for ang in range(10, 160, 2): #wide scan, skipping all the odd numbers to move quicker
@@ -50,12 +50,16 @@ def turnto(ang):
 		enc_tgt(1,0,turnnum) #18 is a full rotation of the wheel, 
 		right()
 		time.sleep(.5) #give the bot time to turn before the app moves on
+		stop()
+		stop()
 	else:
 		stop()
 		print("Moving left.")
 		enc_tgt(0,1,turnnum) 
 		left()
 		time.sleep(.5) #give the bot time to turn before the app moves on
+		stop()
+		stop()
 
 def turnaround():
 	command = raw_input().lower() #take a command and make it lowercase
