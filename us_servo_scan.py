@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 ############################################################################################                                                                
-#      EDITED BY DADILETTA                           
+#      EDITED BY DADILETTA   
+# This script uses a ultrasonic sensor scan to identify a path forward
 ############################################################################################
 #
 # ! Attach Ultrasonic sensor to A1 Port.
@@ -30,14 +31,19 @@ def scan():
 
 def turnto(ang):
 	diff = 80 - ang
-	
+	turnboost = 1
+	if abs(diff) > 30:
+		turnboost = 2
+		print "Need to turn more than 30 degrees. Boosting my turn."
 	if diff >= 0:
 		stop()
-		enc_tgt(1,0,5)
+		print("Moving right.")
+		enc_tgt(1,0,5*turnboost)
 		right()
 	else:
 		stop()
-		enc_tgt(0,1,5)
+		print("Moving left.")
+		enc_tgt(0,1,5*turnboost)
 		left()
 
 
@@ -66,13 +72,9 @@ while True:
 			if sweep[ang] > fardistance:
 				count += 1
 			if count > 20:
-				if ang < 80:
-					print("Looks like I've got a path to the right.")
-				else: 
-					print("Looks like I've got a path to the left.")
 				turnto(ang)
 		if count < 20:
-			print("I don't see a path ahead.")
+			print("I don't see a path ahead. I give up.")
 			break
 
 stop()
