@@ -24,8 +24,8 @@ def scan():
 	print "Starting to scan."
 	for ang in range(10, 160, 2): #wide scan, skipping all the odd numbers to move quicker
 		servo(ang)  #move the servo to the angle in the loop
+		time.sleep(.09) #pause between scans seems to get better results (has to be before the sensor is activated)
 		sweep[ang] = us_dist(15) #note the distance at each angle
-		time.sleep(.04) #pause between scans seems to get better results
 		print("Angle of", ang, "has distance", sweep[ang])
 		if sweep[ang] < stopdistance and ang > 65 and ang < 95: #if we detect any obstacle in the direct path ahead
 			allclear = False
