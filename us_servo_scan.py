@@ -20,6 +20,7 @@ def scan():
 	stop()
 	enable_servo()
 	allclear = True
+	print "Starting to scan."
 	for ang in range(30, 130, 2):
 		servo(ang)
 		time.sleep(.04)
@@ -46,16 +47,27 @@ def turnto(ang):
 		enc_tgt(0,1,5*turnboost)
 		left()
 
-
+def turnaround():
+	command = raw_input().lower()
+	if command == "yes" or command == "y" or command == "sure":
+		enc_tgt(1,1,18)
+		bwd()
+		enc_tgt(1,1,18)
+		right_rot()
+		stop()
+		return True
+	else:
+		return False
 
 while True:
 	if scan() == True:
-		stopcount = 0
+		stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
 		while True:
 			servo(80)
 			disable_servo()
 			set_left_speed(120)
 			set_right_speed(165)
+			print "Let's roll."
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
 			print "I see something ",dist,"cm ahead."
@@ -74,8 +86,9 @@ while True:
 			if count > 20:
 				turnto(ang)
 		if count < 20:
-			print("I don't see a path ahead. I give up.")
-			break
+			print("I don't see a path ahead. Shall I try a 180?")
+			if not turnaround():
+				break #shut it down if ya can't turn 'round
 
 stop()
 disable_servo()
