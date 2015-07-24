@@ -35,7 +35,7 @@ def turnto(ang):
 	#TODO: Debug, sometimes not turning, sometimes turning excessively
 	diff = 80 - (ang-15)  #for some reason, 80 degrees is straight ahead with my servo. I take off 15 from ang to find the center of the window
 	turnnum = 5
-	if abs(diff) > 30 and abs(diff) =< 60: #greater than 30 degrees, we should increase the amount needed to turn
+	if abs(diff) > 30 and abs(diff) <= 60: #greater than 30 degrees, we should increase the amount needed to turn
 		turnnum = 10
 		print "Setting turn variable to 10."
 	elif abs(diff) > 60:
