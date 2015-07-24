@@ -43,7 +43,7 @@ def scan():
 			servo(ang)  #move the servo to the angle in the loop
 			time.sleep(.07) #pause between scans seems to get better results (has to be before the sensor is activated)
 			sweep[ang] = us_dist(15) #note the distance at each angle
-			print "[Angle:", ang, "--", sweep[ang], "cm]", end=""
+			print ("[Angle:", ang, "--", sweep[ang], "cm]", end="")
 			if sweep[ang] < fardistance and ang > 65 and ang < 95: #if we detect any obstacle in the direct path ahead
 				allclear = False
 	return allclear
@@ -127,7 +127,7 @@ while voltcheck():
 			set_right_speed(145) #adjust these so your GoPiGo cruises straight
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
-			print "Obj",dist,"cm.", end=""
+			print ("Obj",dist,"cm.", end="")
 			if dist < stopdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
 				stopcount += 1
 				print "Is that something in my way?"
