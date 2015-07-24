@@ -54,11 +54,11 @@ def turnaround():
 		servo(80)
 		disable_servo()
 		print "Backing up. Beep beep beep."
-		enc_tgt(1,1,18)
 		bwd()
+		time.sleep(.2)
 		stop()
-		enc_tgt(1,1,18)
 		right_rot()
+		time.sleep(.2)
 		stop()
 		return True
 	else:
