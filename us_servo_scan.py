@@ -1,45 +1,46 @@
 #!/usr/bin/env python
 ############################################################################################                                                                
-#      EDITED BY DADILETTA   
+#      EDITED BY DADILETTA   : http://lancertechga.org
 # This script uses a ultrasonic sensor scan to identify a path forward
 ############################################################################################
 #
+# Reference GoPiGo commands at: http://www.dexterindustries.com/GoPiGo/programming/python-programming-for-the-raspberry-pi-gopigo/
 # ! Attach Ultrasonic sensor to A1 Port.
 #
 ############################################################################################
 from gopigo import *
-import sys
-from collections import Counter
-import math
+import sys  #Used to get input from user via console
+from collections import Counter  #do I even need this?
+import math  #Do I need this?
 
-sweep = [None] * 130
-stopdistance = 50
-fardistance = 80
+sweep = [None] * 130  #the list to hold scanning data
+stopdistance = 50  #distance at which the vehicle will halt or will trigger an unsafe scan
+fardistance = 80  #distance used when plotting a clear direction... longer so we're planning farther ahead
 
 def scan():
-	stop()
-	enable_servo()
+	stop()  #I tried making it scan while in motion but couldn't manage it.. is this impossible with the GoPiGo?
+	enable_servo()  #I don't think I need to enable this. Can I remove?
 	allclear = True
 	print "Starting to scan."
-	for ang in range(30, 130, 2):
+	for ang in range(30, 130, 2): #this is the angle that covers the front of my bot's path, your mounting may be different
 		servo(ang)
-		time.sleep(.04)
-		sweep[ang] = us_dist(15)
+		time.sleep(.04) #pause between scans seems to get better results
+		sweep[ang] = us_dist(15) #note the distance at each angle
 		print("Angle of", ang, "has distance", sweep[ang])
-		if sweep[ang] < stopdistance:
+		if sweep[ang] < stopdistance: #if we detect any obstacle, return the message that all is not clear
 			allclear = False
 	return allclear
 
 def turnto(ang):
-	diff = 80 - ang
+	diff = 80 - ang  #for some reason, 80 degrees is straight ahead with my servo
 	turnboost = 1
-	if abs(diff) > 30:
+	if abs(diff) > 30: #greater than 30 degrees, we should increase the amount needed to turn
 		turnboost = 2
 		print "Need to turn more than 30 degrees. Boosting my turn."
 	if diff >= 0:
 		stop()
-		print("Moving right.")
-		enc_tgt(1,0,5*turnboost)
+		print("Moving right.") 
+		enc_tgt(1,0,5*turnboost) #18 is a full rotation of the wheel, 
 		right()
 	else:
 		stop()
@@ -48,31 +49,34 @@ def turnto(ang):
 		left()
 
 def turnaround():
-	command = raw_input().lower()
+	command = raw_input().lower() #take a command and make it lowercase
 	if command == "yes" or command == "y" or command == "sure":
 		stop()
 		servo(80)
 		disable_servo()
 		print "Backing up. Beep beep beep."
-		bwd()
-		time.sleep(.8)
+		bwd()   #TODO: Why doesnt this back up? Mostly just rotates.
+		time.sleep(.8)  #TODO: Replace sleeps with enc_tgt. Was having trouble with it.
 		stop()
 		right_rot()
 		time.sleep(.8)
 		stop()
 		return True
 	else:
-		return False
+		return False #user said not to continue. Return false and break the loop
 
+#HERE'S WHERE THE PROGRAM STARTS
 while True:
-	if scan() == True:
+	if scan() == True:   #Call the scan and if allclear returns positive, let's roll
 		stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
 		while True:
-			servo(80)
+			#TODO: Can I script a volt meter so if there are any spikes we stop for that as well?
+			#TODO: servo sometimes twitches while driving. Why? I disable it... 
+			servo(80)  #move the sensor straight ahead, happens to be 80 for my servo
 			disable_servo()
+			print "Let's roll."   #always good to print messages so you can debug easier
 			set_left_speed(120)  #adjust these so your GoPiGo cruises straight
-			set_right_speed(165) #adjust these so your GoPiGo cruises straight
-			print "Let's roll."
+			set_right_speed(145) #adjust these so your GoPiGo cruises straight
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
 			print "I see something ",dist,"cm ahead."
@@ -80,20 +84,23 @@ while True:
 				stopcount += 1
 				print "Is that something in my way?"
 			if stopcount > 2:
-				print "Yup. Something in my way."
+				print "Yup. Something's in my way."
 				stop() #Stop the GoPiGo
-				break
-	else:
-		count = 0
+				break #stop the fwd loop
+	else:   #here's where we find a safe window to drive forward
+		count = 0  #
 		for ang in range(30, 130, 2):
 			if sweep[ang] > fardistance:
-				count += 1
-			if count > 20:
+				count += 1   #count how many angles have a clear path ahead
+			else: 
+				count = 0   #resets the counter to 0 if a obstacle is detected, we only want 20 returns of safe in a row
+			if count >= 20:   #20 counts means 40 degrees (since I count by 2s in the loop)... maybe I could try a smaller window?
 				turnto(ang)
-		if count < 20:
+				break #once we've found a path, stop looping through the scan data. This favors the right side since that's scanned first
+		if count < 20:     #This is what happens if a window of obstacle-free scan data is not found
 			print("I don't see a path ahead. Shall I try a 180?")
-			if not turnaround():
+			if not turnaround(): #if turnaround returns false
 				break #shut it down if ya can't turn 'round
 
-stop()
+stop()   #once the loop is broken, let's tidy things up just to be sure.
 disable_servo()
