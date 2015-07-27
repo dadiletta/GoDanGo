@@ -54,14 +54,17 @@ def turnto(ang):   #first calculate whether to use a low/med/high turn, then exe
 			print "Having trouble stopping"
 	diff = 80 - (ang-15)  #for some reason, 80 degrees is straight ahead with my servo. I take off 15 from ang to find the center of the window
 	turnnum = 5  #reset the turn num to default value
+	turntime = .15 #since the enc_tgt is unreliable, I'm using this turntime as a redundancy
 	if abs(diff) > 30 and abs(diff) <= 60: #greater than 30 degrees, we should increase the amount needed to turn
 		turnnum = 10
-		print "Setting turn variable to 10."
+		turntime = .30
+		print "Setting turn variable to 10. Turn time to .30"
 	elif abs(diff) > 60:
 		turnnum = 15
-		print "Setting turn variable to 15."
+		turntime = .50
+		print "Setting turn variable to 15. Turn time to .5"
 	else:
-		print "Setting turn variable to 5."
+		print "Setting turn variable to 5. Turn time to .15"
 	if diff >= 0:
 		enc_tgt(1,0,turnnum)
 		while right() == None:
@@ -70,7 +73,7 @@ def turnto(ang):   #first calculate whether to use a low/med/high turn, then exe
 		enc_tgt(0,1,turnnum) 
 		while left() == None:
 			print "Having trouble turning"
-	time.sleep(1)  #give it a second...
+	time.sleep(turntime)  #if the encoder fails, this sleep should vary the turn accordingly
 	while stop() == None:
 		print "Having trouble stopping"
 
@@ -94,7 +97,8 @@ def turnaround():
 	time.sleep(.8)  #TODO: Replace sleeps with enc_tgt. Was having trouble with it.
 	while stop() == None:
 		print "Having trouble stopping"
-	right_rot()
+	while right_rot() == None:
+		print "Having trouble spinning right."
 	time.sleep(.8)
 	while stop() == None:
 		print "Having trouble stopping"
