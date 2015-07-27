@@ -76,8 +76,10 @@ def turnto(ang):
 			print "Having trouble stopping"
 		print("Moving left.")
 		enc_tgt(0,1,turnnum) 
-		while left() == 0:
-			print "Having trouble turning left"
+		if left() == 1:
+			print "Left command returned as a success."
+		else:
+			print "Error turning left. Command returned a 0."
 		time.sleep(.7) #give the bot time to turn before the app moves on
 		while stop() == 0:
 			print "Having trouble stopping"
