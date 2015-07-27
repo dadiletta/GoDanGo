@@ -103,29 +103,31 @@ def turnaround():
 	while stop() == None:
 		print "Having trouble stopping"
 
+def letsroll():
+	stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
+	print "Let's roll."   #always good to print messages so you can debug easier
+	servo(80)  #move the sensor straight ahead, happens to be 80 for my servo
+	while disable_servo() == None:
+		print "Having trouble disabling my servo"
+	while True:
+		set_left_speed(120)  #adjust these so your GoPiGo cruises straight
+		set_right_speed(155) #adjust these so your GoPiGo cruises straight
+		fwd()
+		dist=us_dist(15)			#Find the distance of the object in front
+		print "Obj",dist,"cm."
+		if dist < stopdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
+			stopcount += 1
+			print "Is that something in my way?"
+		if stopcount > 2:
+			print "Yup. Something's in my way."
+			while stop() == None:
+				print "Having trouble stopping"
+			break #stop the fwd loop
+
 #HERE'S WHERE THE PROGRAM STARTS
 while voltcheck():  #keep looping as long as the power is within acceptable range
 	if scan() == True:   #Call the scan and if allclear returns positive, let's roll
-		stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
-		print "Let's roll."   #always good to print messages so you can debug easier
-		while True:
-			#TODO: servo sometimes twitches while driving. Why? I disable it... 
-			servo(80)  #move the sensor straight ahead, happens to be 80 for my servo
-			while disable_servo() == None:
-				print "Having trouble disabling my servo"
-			set_left_speed(120)  #adjust these so your GoPiGo cruises straight
-			set_right_speed(155) #adjust these so your GoPiGo cruises straight
-			fwd()
-			dist=us_dist(15)			#Find the distance of the object in front
-			print "Obj",dist,"cm."
-			if dist < stopdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
-				stopcount += 1
-				print "Is that something in my way?"
-			if stopcount > 2:
-				print "Yup. Something's in my way."
-				while stop() == None:
-					print "Having trouble stopping"
-				break #stop the fwd loop
+		letsroll()
 	else:   #here's where we find a safe window to drive forward
 		count = 0  #counter to track the number of safe angles in a row
 		for ang in range(10, 160, 2):
@@ -133,7 +135,10 @@ while voltcheck():  #keep looping as long as the power is within acceptable rang
 				count += 1   #count how many angles have a clear path ahead
 			else: 
 				count = 0   #resets the counter to 0 if a obstacle is detected, we only want counts in a row
-			if count >= 10:   #10 counts means 20 degrees (since I count by 2s in the loop)
+			#now we decide what to do:
+			if sweep[75] > fardistance and sweep[80] > fardistance and sweep[95] > fardistance:
+				letsroll() #in case the scan finds that there is a clear path ahead, let's move on
+			elif count >= 10:   #10 counts means 20 degrees (since I count by 2s in the loop)
 				turnto(ang)
 				break #once we've found a path, stop looping through the scan data. This favors the right side since that's scanned first
 		if count < 10:     #This is what happens if a window of obstacle-free scan data is not found
