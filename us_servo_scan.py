@@ -18,18 +18,18 @@ sweep = [None] * 160  #the list to hold scanning data
 cornerdistance = 10  #used to check the corners for nearby collisions
 fardistance = 90  #distance used when plotting a clear direction... longer so we're planning farther ahead
 
-def quickcheck():
+def quickcheck(counter):
 	enable_servo()
-	servo(60)  #check the right edge of our forward path
+	servo(70)  #check the right edge of our forward path
 	time.sleep(.2) #pause so the sensor reading is more accurate
 	check1 = us_dist(15) #first check
 	servo(80)  #check dead ahead
 	time.sleep(.1)
 	check2 = us_dist(15)
-	servo(100) #check the left edge of our forward path
+	servo(90) #check the left edge of our forward path
 	time.sleep(.1)
 	check3 = us_dist(15)
-	if check1 > cornerdistance and check2 > fardistance and check3 > cornerdistance:
+	if check1 > fardistance and check2 > fardistance and check3 > fardistance:
 		print "Quick check looks good."
 		disable_servo()
 		return True
@@ -37,6 +37,24 @@ def quickcheck():
 		print "Quick check failed. [70|",check1,"cm.][80|",check2,"cm.][90|",check3,"cm.]" 
 		disable_servo()
 		return False
+
+def crashcheck(counter):
+	if counter % 10 == 0:
+		servo(140)
+		time.sleep(.4)
+		if us_dist(15) < cornerdistance:
+			return False
+	elif counter % 5 == 0:  #this will be every 10, since the first if will take the 10's
+		servo(20)
+		time.sleep(.4)
+		if us_dist(15) < cornerdistance:
+			return False
+	servo(80)
+	time.sleep(.1)
+	if us_dist(15) < fardistance:
+		return False
+	else:
+		return True
 
 def scan():
 	while stop() == 0:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
@@ -112,12 +130,14 @@ def turnaround():
 
 def letsroll():
 	stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
+	counter = 0 #used for crashcheck, so we only check for corners every 5 counts
 	print "Let's roll."   #always good to print messages so you can debug easier
 	while True:
 		set_left_speed(120)  #adjust these so your GoPiGo cruises straight
 		set_right_speed(155) #adjust these so your GoPiGo cruises straight
 		fwd()
-		if not quickcheck():	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
+		counter += 1
+		if not crashcheck(counter):	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
 			stopcount += 1
 			print "Is that something in my way?"
 		if stopcount > 2:
