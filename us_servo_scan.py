@@ -32,6 +32,7 @@ def quickcheck():
 		print "Quick check looks good."
 		return True
 	else:
+		print "Quick check failed. [65|",check1,"cm.][80|",check2,"cm.][95|",check3,"cm.]" 
 		return False
 
 def scan():
@@ -106,18 +107,11 @@ def turnaround():
 def letsroll():
 	stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
 	print "Let's roll."   #always good to print messages so you can debug easier
-	enable_servo()
-	servo(80)  #move the sensor straight ahead, happens to be 80 for my servo
-	time.sleep(.05) #give the servo time to move before we kill it
-	while disable_servo() == None:
-		print "Having trouble disabling my servo"
 	while True:
 		set_left_speed(120)  #adjust these so your GoPiGo cruises straight
 		set_right_speed(155) #adjust these so your GoPiGo cruises straight
 		fwd()
-		dist=us_dist(15)			#Find the distance of the object in front
-		print "Obj",dist,"cm."
-		if dist < stopdistance:	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
+		if not quickcheck():	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
 			stopcount += 1
 			print "Is that something in my way?"
 		if stopcount > 2:
