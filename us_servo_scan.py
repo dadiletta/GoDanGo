@@ -65,22 +65,30 @@ def turnto(ang):
 		while stop() == 0:
 			print "Having trouble stopping"
 		print("Moving right.") 
-		enc_tgt(1,0,turnnum) #18 is a full rotation of the wheel, 
-		while right() == 0:
-			print "Having trouble turning right"
-		time.sleep(.5) #give the bot time to turn before the app moves on
+		while True:
+			enc_tgt(1,0,turnnum) 
+			if right() == 1:
+				print "Right command returned as a success."
+				break
+			else:
+				print "Error turning right. Command returned a 0."
+				print "Paused. Press any key to retry.
+				raw_input()
 		while stop() == 0:
 			print "Having trouble stopping"
 	else:
 		while stop() == 0:
 			print "Having trouble stopping"
 		print("Moving left.")
-		enc_tgt(0,1,turnnum) 
-		if left() == 1:
-			print "Left command returned as a success."
-		else:
-			print "Error turning left. Command returned a 0."
-		time.sleep(.7) #give the bot time to turn before the app moves on
+		while True:
+			enc_tgt(0,1,turnnum) 
+			if left() == 1:
+				print "Left command returned as a success."
+				break
+			else:
+				print "Error turning left. Command returned a 0."
+				print "Paused. Press any key to retry.
+				raw_input()
 		while stop() == 0:
 			print "Having trouble stopping"
 
@@ -106,10 +114,12 @@ def turnaround():
 		while bwd() == 0:
 			print "Having trouble backing up"
 		time.sleep(.8)  #TODO: Replace sleeps with enc_tgt. Was having trouble with it.
-		stop()
+		while stop() == 0:
+			print "Having trouble stopping"
 		right_rot()
 		time.sleep(.8)
-		stop()
+		while stop() == 0:
+			print "Having trouble stopping"
 		return True
 	else:
 		return False #user said not to continue. Return false and break the loop
@@ -134,7 +144,8 @@ while voltcheck():  #keep looping as long as the power is within acceptable rang
 				print "Is that something in my way?"
 			if stopcount > 2:
 				print "Yup. Something's in my way."
-				stop() #Stop the GoPiGo
+				while stop() == 0:
+					print "Having trouble stopping"
 				break #stop the fwd loop
 	else:   #here's where we find a safe window to drive forward
 		count = 0  #
@@ -143,10 +154,10 @@ while voltcheck():  #keep looping as long as the power is within acceptable rang
 				count += 1   #count how many angles have a clear path ahead
 			else: 
 				count = 0   #resets the counter to 0 if a obstacle is detected, we only want 20 returns of safe in a row
-			if count >= 15:   #15 counts means 30 degrees (since I count by 2s in the loop)
+			if count >= 10:   #10 counts means 20 degrees (since I count by 2s in the loop)
 				turnto(ang)
 				break #once we've found a path, stop looping through the scan data. This favors the right side since that's scanned first
-		if count < 15:     #This is what happens if a window of obstacle-free scan data is not found
+		if count < 10:     #This is what happens if a window of obstacle-free scan data is not found
 			print("I don't see a path ahead. Shall I try a 180?")
 			if not turnaround(): #if turnaround returns false
 				break #shut it down if ya can't turn 'round
