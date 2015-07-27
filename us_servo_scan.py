@@ -106,7 +106,9 @@ def turnaround():
 def letsroll():
 	stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
 	print "Let's roll."   #always good to print messages so you can debug easier
+	enable_servo()
 	servo(80)  #move the sensor straight ahead, happens to be 80 for my servo
+	time.sleep(.05) #give the servo time to move before we kill it
 	while disable_servo() == None:
 		print "Having trouble disabling my servo"
 	while True:
