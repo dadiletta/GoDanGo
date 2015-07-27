@@ -10,6 +10,7 @@
 ############################################################################################
 from gopigo import *
 import sys  #Used to get input from user via console
+from time import sleep #needed for the pause commands
 from collections import Counter  #do I even need this?
 import math  #Do I need this?
 
@@ -63,10 +64,12 @@ def turnto(ang):   #first calculate whether to use a low/med/high turn, then exe
 		print "Setting turn variable to 5."
 	if diff >= 0:
 		enc_tgt(1,0,turnnum)
-		print "Moving right. Command returned:", right(),"message"
+		while right() == None:
+			print "Having trouble turning"
 	else:
 		enc_tgt(0,1,turnnum) 
-		print "Moving left. Command returned:", left(),"message"
+		while left() == None:
+			print "Having trouble turning"
 	time.sleep(1)  #give it a second...
 	while stop() == None:
 		print "Having trouble stopping"
