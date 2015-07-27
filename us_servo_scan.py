@@ -69,13 +69,9 @@ def turnto(ang):
 		right()
 		print "I think I turned. Continue or retry? [c/r]"
 		answer = raw_input()
-		if answer == "c":
-			print "righto!"
 		if answer == "r":
 			enc_tgt(1,0,turnnum)
 			right()
-		else:
-			break
 		while stop() == 0:
 			print "Having trouble stopping"
 	else:
