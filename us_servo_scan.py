@@ -72,7 +72,7 @@ def turnto(ang):
 				break
 			else:
 				print "Error turning right. Command returned a 0."
-				print "Paused. Press any key to retry.
+				print "Paused. Press any key to retry."
 				raw_input()
 		while stop() == 0:
 			print "Having trouble stopping"
@@ -87,7 +87,7 @@ def turnto(ang):
 				break
 			else:
 				print "Error turning left. Command returned a 0."
-				print "Paused. Press any key to retry.
+				print "Paused. Press any key to retry."
 				raw_input()
 		while stop() == 0:
 			print "Having trouble stopping"
