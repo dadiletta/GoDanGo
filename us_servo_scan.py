@@ -15,31 +15,34 @@ from collections import Counter  #do I even need this?
 import math  #Do I need this?
 
 sweep = [None] * 160  #the list to hold scanning data
-stopdistance = 50  #distance at which the vehicle will halt while in motion
+stopdistance = 30  #distance at which the vehicle will halt while in motion
 fardistance = 90  #distance used when plotting a clear direction... longer so we're planning farther ahead
 
 def quickcheck():
-	servo(75)  #check the right edge of our forward path
-	time.sleep(.1) #pause so the sensor reading is more accurate
+	enable_servo()
+	servo(70)  #check the right edge of our forward path
+	time.sleep(.2) #pause so the sensor reading is more accurate
 	check1 = us_dist(15) #first check
 	servo(80)  #check dead ahead
 	time.sleep(.1)
 	check2 = us_dist(15)
-	servo(85) #check the left edge of our forward path
+	servo(90) #check the left edge of our forward path
 	time.sleep(.1)
 	check3 = us_dist(15)
-	if check1 > fardistance and check2 > fardistance and check3 > fardistance:
+	if check1 > stopdistance and check2 > fardistance and check3 > stopdistance:
 		print "Quick check looks good."
+		disable_servo()
 		return True
 	else:
-		print "Quick check failed. [75|",check1,"cm.][80|",check2,"cm.][85|",check3,"cm.]" 
+		print "Quick check failed. [70|",check1,"cm.][80|",check2,"cm.][90|",check3,"cm.]" 
+		disable_servo()
 		return False
 
 def scan():
 	while stop() == 0:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
 		print "Having trouble stopping"
 		time.sleep(.1)
-	allclear = True
+	allclear = True #we use this to save the return and still complete the whole scan
 	if not quickcheck():
 		print "Starting a full scan."
 		for ang in range(10, 160, 2): #wide scan, skipping all the odd numbers to move quicker
@@ -49,6 +52,8 @@ def scan():
 			print "[Angle:", ang, "--", sweep[ang], "cm]"
 			if sweep[ang] < fardistance and ang > 65 and ang < 95: #if we detect any obstacle in the direct path ahead
 				allclear = False
+	servo(80)
+	disable_servo()
 	return allclear
 
 def turnto(ang):   #first calculate whether to use a low/med/high turn, then execute the turn
@@ -132,11 +137,7 @@ while voltcheck():  #keep looping as long as the power is within acceptable rang
 				count += 1   #count how many angles have a clear path ahead
 			else: 
 				count = 0   #resets the counter to 0 if a obstacle is detected, we only want counts in a row
-			#now we decide what to do:
-			if sweep[75] > fardistance and sweep[80] > fardistance and sweep[95] > fardistance:
-				letsroll() #in case the scan finds that there is a clear path ahead, let's move on
-			elif count >= 10:   #10 counts means 20 degrees (since I count by 2s in the loop)
-				turnto(ang)
+			if count >= 10:   #10 counts means 20 degrees (since I count by 2s in the loop)
 				break #once we've found a path, stop looping through the scan data. This favors the right side since that's scanned first
 		if count < 10:     #This is what happens if a window of obstacle-free scan data is not found
 			print "I don't see a path. [S]can again | [T]urn around | [Q]uit"
@@ -147,6 +148,8 @@ while voltcheck():  #keep looping as long as the power is within acceptable rang
 				turnaround()
 			else:	
 				break
+		else:
+			turnto(ang)
 
 stop()   #once the loop is broken, let's tidy things up just to be sure.
 disable_servo()
