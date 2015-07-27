@@ -71,7 +71,7 @@ def turnto(ang):
 				print "Right command returned as a success."
 				break
 			else:
-				print "Error turning right. Command returned a 0."
+				print "Error turning right. Command returned a", right()
 				print "Paused. Press any key to retry."
 				raw_input()
 		while stop() == 0:
