@@ -18,7 +18,7 @@ sweep = [None] * 160  #the list to hold scanning data
 cornerdistance = 10  #used to check the corners for nearby collisions
 fardistance = 90  #distance used when plotting a clear direction... longer so we're planning farther ahead
 
-def quickcheck(counter):
+def quickcheck():
 	enable_servo()
 	servo(70)  #check the right edge of our forward path
 	time.sleep(.2) #pause so the sensor reading is more accurate
