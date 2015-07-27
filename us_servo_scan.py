@@ -78,7 +78,7 @@ def turnto(ang):
 		enc_tgt(0,1,turnnum) 
 		while left() == 0:
 			print "Having trouble turning left"
-		time.sleep(.5) #give the bot time to turn before the app moves on
+		time.sleep(.7) #give the bot time to turn before the app moves on
 		while stop() == 0:
 			print "Having trouble stopping"
 
@@ -113,18 +113,17 @@ def turnaround():
 		return False #user said not to continue. Return false and break the loop
 
 #HERE'S WHERE THE PROGRAM STARTS
-while voltcheck():
+while voltcheck():  #keep looping as long as the power is within acceptable range
 	if scan() == True:   #Call the scan and if allclear returns positive, let's roll
 		stopcount = 0 #avoids false stops by having to detect an obstacle multiple times
 		print "Let's roll."   #always good to print messages so you can debug easier
 		while True:
-			#TODO: Can I script a volt meter so if there are any spikes we stop for that as well?
 			#TODO: servo sometimes twitches while driving. Why? I disable it... 
 			servo(80)  #move the sensor straight ahead, happens to be 80 for my servo
 			while disable_servo() == 0:
 				print "Having trouble disabling my servo"
 			set_left_speed(120)  #adjust these so your GoPiGo cruises straight
-			set_right_speed(145) #adjust these so your GoPiGo cruises straight
+			set_right_speed(155) #adjust these so your GoPiGo cruises straight
 			fwd()
 			dist=us_dist(15)			#Find the distance of the object in front
 			print "Obj",dist,"cm."
