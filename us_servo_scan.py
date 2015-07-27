@@ -19,25 +19,26 @@ stopdistance = 50  #distance at which the vehicle will halt while in motion
 fardistance = 90  #distance used when plotting a clear direction... longer so we're planning farther ahead
 
 def quickcheck():
-	servo(65)  #check the right edge of our forward path
-	time.sleep(.07) #pause so the sensor reading is more accurate
+	servo(75)  #check the right edge of our forward path
+	time.sleep(.1) #pause so the sensor reading is more accurate
 	check1 = us_dist(15) #first check
 	servo(80)  #check dead ahead
-	time.sleep(.07)
+	time.sleep(.1)
 	check2 = us_dist(15)
-	servo(95) #check the left edge of our forward path
-	time.sleep(.07)
+	servo(85) #check the left edge of our forward path
+	time.sleep(.1)
 	check3 = us_dist(15)
 	if check1 > fardistance and check2 > fardistance and check3 > fardistance:
 		print "Quick check looks good."
 		return True
 	else:
-		print "Quick check failed. [65|",check1,"cm.][80|",check2,"cm.][95|",check3,"cm.]" 
+		print "Quick check failed. [75|",check1,"cm.][80|",check2,"cm.][85|",check3,"cm.]" 
 		return False
 
 def scan():
 	while stop() == 0:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
 		print "Having trouble stopping"
+		time.sleep(.1)
 	allclear = True
 	if not quickcheck():
 		print "Starting a full scan."
@@ -53,7 +54,7 @@ def scan():
 def turnto(ang):   #first calculate whether to use a low/med/high turn, then execute the turn
 	while stop() == None:  #stop loop to prepare for turn
 			print "Having trouble stopping"
-	diff = 80 - (ang-15)  #for some reason, 80 degrees is straight ahead with my servo. I take off 15 from ang to find the center of the window
+	diff = 80 - (ang-10)  #for some reason, 80 degrees is straight ahead with my servo. I take off 10 from ang to find the center of the window
 	turnnum = 5  #reset the turn num to default value
 	turntime = .14 #since the enc_tgt is unreliable, I'm using this turntime as a redundancy
 	if abs(diff) > 30 and abs(diff) <= 60: #greater than 30 degrees, we should increase the amount needed to turn
