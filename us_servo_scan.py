@@ -20,13 +20,13 @@ fardistance = 90  #distance used when plotting a clear direction... longer so we
 
 def quickcheck():
 	enable_servo()
-	servo(40)  #check the right edge of our forward path
+	servo(60)  #check the right edge of our forward path
 	time.sleep(.2) #pause so the sensor reading is more accurate
 	check1 = us_dist(15) #first check
 	servo(80)  #check dead ahead
 	time.sleep(.1)
 	check2 = us_dist(15)
-	servo(1200) #check the left edge of our forward path
+	servo(100) #check the left edge of our forward path
 	time.sleep(.1)
 	check3 = us_dist(15)
 	if check1 > cornerdistance and check2 > fardistance and check3 > cornerdistance:
