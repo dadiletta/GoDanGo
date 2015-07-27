@@ -15,21 +15,21 @@ from collections import Counter  #do I even need this?
 import math  #Do I need this?
 
 sweep = [None] * 160  #the list to hold scanning data
-stopdistance = 30  #distance at which the vehicle will halt while in motion
+cornerdistance = 10  #used to check the corners for nearby collisions
 fardistance = 90  #distance used when plotting a clear direction... longer so we're planning farther ahead
 
 def quickcheck():
 	enable_servo()
-	servo(70)  #check the right edge of our forward path
+	servo(40)  #check the right edge of our forward path
 	time.sleep(.2) #pause so the sensor reading is more accurate
 	check1 = us_dist(15) #first check
 	servo(80)  #check dead ahead
 	time.sleep(.1)
 	check2 = us_dist(15)
-	servo(90) #check the left edge of our forward path
+	servo(1200) #check the left edge of our forward path
 	time.sleep(.1)
 	check3 = us_dist(15)
-	if check1 > stopdistance and check2 > fardistance and check3 > stopdistance:
+	if check1 > cornerdistance and check2 > fardistance and check3 > cornerdistance:
 		print "Quick check looks good."
 		disable_servo()
 		return True
