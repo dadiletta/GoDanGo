@@ -75,6 +75,8 @@ def scan():
 	return allclear
 
 def turnto(ang):   #first calculate whether to use a low/med/high turn, then execute the turn
+	set_left_speed(50)  #adjust these so your GoPiGo cruises straight
+	set_right_speed(65) #adjust these so your GoPiGo cruises straight
 	while stop() == None:  #stop loop to prepare for turn
 			print "Having trouble stopping"
 	diff = 80 - (ang-10)  #for some reason, 80 degrees is straight ahead with my servo. I take off 10 from ang to find the center of the window
@@ -114,6 +116,8 @@ def voltcheck():  #this check runs at the top of the main while loop
 		return True
 
 def turnaround():
+	set_left_speed(180)  #adjust these so your GoPiGo cruises straight
+	set_right_speed(180) #adjust these so your GoPiGo cruises straight
 	while stop() == None:
 		print "Having trouble stopping"
 	print "Backing up. Beep beep beep."
@@ -134,7 +138,7 @@ def letsroll():
 	print "Let's roll."   #always good to print messages so you can debug easier
 	while True:
 		set_left_speed(50)  #adjust these so your GoPiGo cruises straight
-		set_right_speed(85) #adjust these so your GoPiGo cruises straight
+		set_right_speed(65) #adjust these so your GoPiGo cruises straight
 		fwd()
 		counter += 1
 		if not crashcheck(counter):	#If the object is closer than the "distance_to_stop" distance, stop the GoPiGo
