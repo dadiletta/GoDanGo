@@ -57,6 +57,7 @@ def crashcheck(counter):
 		return True
 
 def scan():
+	time.sleep(1)
 	while stop() == 0:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
 		print "Having trouble stopping"
 		time.sleep(.1)
@@ -75,8 +76,9 @@ def scan():
 	return allclear
 
 def turnto(ang):   #first calculate whether to use a low/med/high turn, then execute the turn
-	set_left_speed(50)  #adjust these so your GoPiGo cruises straight
-	set_right_speed(65) #adjust these so your GoPiGo cruises straight
+	time.sleep(1)
+	set_left_speed(180)  #adjust these so your GoPiGo cruises straight
+	set_right_speed(180) #adjust these so your GoPiGo cruises straight
 	while stop() == None:  #stop loop to prepare for turn
 			print "Having trouble stopping"
 	diff = 80 - (ang-10)  #for some reason, 80 degrees is straight ahead with my servo. I take off 10 from ang to find the center of the window
@@ -116,6 +118,8 @@ def voltcheck():  #this check runs at the top of the main while loop
 		return True
 
 def turnaround():
+	disable_servo()
+	time.sleep(1)
 	set_left_speed(180)  #adjust these so your GoPiGo cruises straight
 	set_right_speed(180) #adjust these so your GoPiGo cruises straight
 	while stop() == None:
