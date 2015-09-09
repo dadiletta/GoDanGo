@@ -105,7 +105,7 @@ def turnto(ang):   #first calculate whether to use a low/med/high turn, then exe
 		print "Having trouble stopping"
 
 def voltcheck():  #this check runs at the top of the main while loop
-	if volt() < 7:
+	if volt() < 6:
 		print "Not enough power"
 		return False
 	elif volt() > 12:
