@@ -164,7 +164,7 @@ while voltcheck():  #keep looping as long as the power is within acceptable rang
 				break #once we've found a path, stop looping through the scan data. This favors the right side since that's scanned first
 		if count < 10:     #This is what happens if a window of obstacle-free scan data is not found
 			print "I don't see a path. Going to turn around."
-            turnaround()
+            		turnaround()
 		else:
 			turnto(ang)
 
