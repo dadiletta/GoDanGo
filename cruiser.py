@@ -59,7 +59,7 @@ def crashcheck(counter):
 def scan():
 	while stop() == 0:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
 		print "Having trouble stopping"
-		time.sleep(.1)
+		time.sleep(.5)
 	allclear = True #we use this to save the return and still complete the whole scan
 	if not quickcheck():
 		print "Starting a full scan."
@@ -147,26 +147,48 @@ def letsroll():
 			break #stop the fwd loop
 
 ################################
+################################
+
+def casualScan():
+    while stop() == None:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
+        print "Having trouble stopping"
+        time.sleep(.5)
+    for ang in range(10, 160, 1): #wide scan, skipping all the odd numbers to move quicker
+        servo(ang)  #move the servo to the angle in the loop
+        time.sleep(.5) #pause between scans seems to get better results (has to be before the sensor is activated)
+        sweep[ang] = us_dist(15) #note the distance at each angle
+        print "[Angle:", ang, "--", sweep[ang], "cm]"
+        if sweep[ang] < 20:
+            time.sleep(.5)
+            sweep[ang] = us_dist(15) #let's confirm
+            if sweep[ang] < 20:
+                break
+
+def twitch():
+    led_on(LED_R)
+    led_on(LED_L)
+    set_right_speed(10)
+    set_left_speed(10)
+    bwd()
+    time.sleep(.1)
+    while stop() == None:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
+        print "Having trouble stopping"
+        time.sleep(.5)
+    led_off(LED_R)
+    led_off(LED_L)
+
+
+
+
+################################
 #HERE'S WHERE THE PROGRAM STARTS
 ################################
 
-while voltcheck():  #keep looping as long as the power is within acceptable range
-	if scan() == True:   #Call the scan and if allclear returns positive, let's roll
-		letsroll()
-	else:   #here's where we find a safe window to drive forward
-		count = 0  #counter to track the number of safe angles in a row
-		for ang in range(10, 160, 2):
-			if sweep[ang] > fardistance:
-				count += 1   #count how many angles have a clear path ahead
-			else: 
-				count = 0   #resets the counter to 0 if a obstacle is detected, we only want counts in a row
-			if count >= 10:   #10 counts means 20 degrees (since I count by 2s in the loop)
-				break #once we've found a path, stop looping through the scan data. This favors the right side since that's scanned first
-		if count < 10:     #This is what happens if a window of obstacle-free scan data is not found
-			print "I don't see a path. Going to turn around."
-            turnaround()
-		else:
-			turnto(ang)
 
-stop()   #once the loop is broken, let's tidy things up just to be sure.
-disable_servo()
+while True:
+    casualScan()
+    twitch()
+
+
+
+
