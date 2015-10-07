@@ -182,6 +182,8 @@ def twitch():
     while stop() == None:  #bot sometimes doesn't stop, so I loop the command until it returns a 1 for completed
         print "Having trouble stopping"
         time.sleep(.5)
+    servo(30)
+    servo(110)
     led_off(LED_R)
     led_off(LED_L)
 
