@@ -79,7 +79,7 @@ if __name__ == '__main__':
    mqtt_service.start()
 
    while(True):
-       var distance = us_dist(15)
+       distance = us_dist(15)
        time.sleep(2)
        self._client.publish("/boat/meetup/{}/distance".format(UID), str(distance))
 
