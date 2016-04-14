@@ -44,6 +44,12 @@ class MqttService(object):
         #self._client.loop_forever()
 
 
+        while(True):
+            distance = us_dist(15)
+            time.sleep(2)
+            self._client.publish("/boat/meetup/{}/distance".format(UID), str(distance))
+
+
     def _on_disconnect(self, client, userdata, return_code):
         error = mqtt.error_string(return_code)
         print('disconnected from mqtt broker: {}'.format(error))
@@ -78,8 +84,4 @@ if __name__ == '__main__':
    mqtt_service = MqttService() 
    mqtt_service.start()
 
-   while(True):
-       distance = us_dist(15)
-       time.sleep(2)
-       self._client.publish("/boat/meetup/{}/distance".format(UID), str(distance))
 
